@@ -18,7 +18,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: "Entrance Test",
-      initialRoute: RouteName.login,
+      initialRoute: RouteName.splashscreen,
       getPages: AppRoute.pages,
       initialBinding: AppBinding(),
       debugShowCheckedModeBanner: false,
