@@ -15,26 +15,37 @@ class SplashscreenPage extends GetView<SplashscreenController> {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.blue, Colors.green],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            colors: [Color(0xFF37B133), Color(0xFF3337B1)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              // Replace the below line with your actual app icon
-              Image.asset('assets/icons/icon-app.png'),
-              // Padding(
-              //   padding: const EdgeInsets.all(16.0),
-              //   child: Text(
-              //     _version,
-              //     style: const TextStyle(color: Colors.white, fontSize: 16),
-              //   ),
-              // ),
-            ],
-          ),
+        child: Stack(
+          children: [
+            Center(
+              child: Image.asset('assets/icons/icon-app.png'),
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: FutureBuilder(
+                    future: controller.loadVersion(),
+                    builder: (context, snapshot) {
+                      return Text(
+                        textAlign: TextAlign.center,
+                        snapshot.data ?? "loading...",
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 16),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

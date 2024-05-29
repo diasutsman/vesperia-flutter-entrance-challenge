@@ -1,15 +1,25 @@
 import 'package:entrance_test/app/routes/route_name.dart';
-import 'package:entrance_test/src/repositories/user_repository.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/get_core.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class SplashscreenController extends GetxController {
   @override
   void onInit() {
     super.onInit();
 
-    // navigateToLogin();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+
+    navigateToLogin();
+  }
+
+  @override
+  void onClose() {
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: SystemUiOverlay.values,
+    );
+    super.onClose();
   }
 
   void navigateToLogin() {
@@ -19,5 +29,10 @@ class SplashscreenController extends GetxController {
         Get.offAllNamed(RouteName.login);
       },
     );
+  }
+
+  Future<String> loadVersion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    return 'Ver: ${packageInfo.version}';
   }
 }
