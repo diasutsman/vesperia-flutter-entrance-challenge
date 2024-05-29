@@ -22,16 +22,26 @@ class LoginController extends GetxController {
 
   bool get passwordVisible => _passwordVisible.value;
 
+  final _isLoadingLogin = false.obs;
+
+  bool get isLoadingLogin => _isLoadingLogin.value;
+
   void doLogin() async {
-    if (formKey.currentState?.validate() == false) return;
+    _isLoadingLogin.value = true;
+    if (formKey.currentState?.validate() == false) {
+      _isLoadingLogin.value = false;
+      return;
+    }
 
     if (etPhone.text != '85173254399' || etPassword.text != '12345678') {
+      _isLoadingLogin.value = false;
       SnackbarWidget.showFailedSnackbar('Email atau password salah');
       return;
     }
 
     await _userRepository.login();
     Get.offAllNamed(RouteName.dashboard);
+    _isLoadingLogin.value = false;
   }
 
   void togglePasswordVisibility() {

@@ -12,6 +12,7 @@ class ButtonIcon extends StatelessWidget {
     required this.onClick,
     required this.textLabel,
     this.side,
+    this.disabled = false,
   }) : super(key: key);
 
   final Color? buttonColor;
@@ -23,6 +24,7 @@ class ButtonIcon extends StatelessWidget {
   final Function onClick;
   final String textLabel;
   final BorderSide? side;
+  final bool disabled;
 
   @override
   Widget build(BuildContext context) {
@@ -31,28 +33,30 @@ class ButtonIcon extends StatelessWidget {
         backgroundColor: buttonColor,
         shape: borderColor != null
             ? RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-          side: BorderSide(width: 1.5, color: borderColor!),
-        )
+                borderRadius: BorderRadius.circular(8),
+                side: BorderSide(width: 1.5, color: borderColor!),
+              )
             : RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+                borderRadius: BorderRadius.circular(8),
+              ),
         splashFactory: NoSplash.splashFactory,
         elevation: 0,
         side: side,
       ),
-      onPressed: () {
-        onClick();
-      },
+      onPressed: disabled
+          ? null
+          : () {
+              onClick();
+            },
       icon: (iconSource != null)
           ? Image.asset(
-        iconSource ?? "",
-        height: iconSize ?? 24,
-        width: iconSize ?? 24,
-      )
+              iconSource ?? "",
+              height: iconSize ?? 24,
+              width: iconSize ?? 24,
+            )
           : icon != null
-          ? Icon(icon, size: iconSize ?? 24)
-          : const SizedBox.shrink(),
+              ? Icon(icon, size: iconSize ?? 24)
+              : const SizedBox.shrink(),
       label: Text(
         textLabel,
         style: TextStyle(
