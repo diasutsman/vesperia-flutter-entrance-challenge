@@ -4,5 +4,9 @@ class Endpoint {
 
   static const getUser = '/user';
 
+  static const signIn = '/sign-in';
+
+  static const signOut = '/sign-out';
+
   static const getProductList = '/product';
 }

@@ -33,13 +33,19 @@ class LoginController extends GetxController {
       return;
     }
 
-    if (etPhone.text != '85173254399' || etPassword.text != '12345678') {
+    String phoneNumber = etPhone.text;
+    String password = etPassword.text;
+
+    if (phoneNumber != '85173254399' || password != '12345678') {
       _isLoadingLogin.value = false;
       SnackbarWidget.showFailedSnackbar('Email atau password salah');
       return;
     }
 
-    await _userRepository.login();
+    await _userRepository.login(
+      phoneNumber: phoneNumber,
+      password: password,
+    );
     Get.offAllNamed(RouteName.dashboard);
     _isLoadingLogin.value = false;
   }

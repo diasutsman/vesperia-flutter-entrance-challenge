@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:entrance_test/src/constants/local_data_key.dart';
+import 'package:entrance_test/src/models/response/login_response_model.dart';
+import 'package:entrance_test/src/models/response/logout_response_model.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../constants/endpoint.dart';
@@ -14,18 +16,57 @@ class UserRepository {
       : _client = client,
         _local = local;
 
-  Future<void> login() async {
+  Future<LoginResponseModel> login({
+    required String phoneNumber,
+    required String password,
+    String countryCode = '62',
+  }) async {
     //Artificial delay to simulate logging in process
-    await Future.delayed(const Duration(seconds: 2));
+    // await Future.delayed(const Duration(seconds: 2));
     //Placeholder token. DO NOT call real logout API using this token
-    _local.write(
-        LocalDataKey.token, "621|DBiUBMfsEtX01tbdu4duNRCNMTt7PV5blr6zxTvq");
+    // _local.write(
+    //     LocalDataKey.token, "621|DBiUBMfsEtX01tbdu4duNRCNMTt7PV5blr6zxTvq");
+
+    try {
+      final responseJson = await _client.post(
+        Endpoint.signIn,
+        data: {
+          "phone_number": phoneNumber,
+          "password": password,
+          "country_code": countryCode
+        },
+      );
+      final model = LoginResponseModel.fromJson(responseJson.data);
+      _local.write(
+        LocalDataKey.token,
+        model.data.token,
+      );
+      return model;
+    } on DioException catch (_) {
+      rethrow;
+    }
   }
 
-  Future<void> logout() async {
+  Future<LogoutResponseModel> logout() async {
     //Artificial delay to simulate logging out process
-    await Future.delayed(const Duration(seconds: 2));
-    await _local.remove(LocalDataKey.token);
+    // await Future.delayed(const Duration(seconds: 2));
+    // await _local.remove(LocalDataKey.token);
+
+    try {
+      final responseJson = await _client.post(
+        Endpoint.signOut,
+        options: NetworkingUtil.setupNetworkOptions(
+          'Bearer ${_local.read(LocalDataKey.token)}',
+        ),
+      );
+      final model = LogoutResponseModel.fromJson(responseJson.data);
+      _local.remove(
+        LocalDataKey.token,
+      );
+      return model;
+    } on DioException catch (_) {
+      rethrow;
+    }
   }
 
   Future<UserResponseModel> getUser() async {

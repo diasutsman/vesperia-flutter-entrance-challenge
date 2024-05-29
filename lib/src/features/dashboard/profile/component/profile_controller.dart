@@ -141,9 +141,28 @@ class ProfileController extends GetxController {
   }
 
   void doLogout() async {
-    _isLogoutLoading.value = true;
-    await _userRepository.logout();
-    Get.offAllNamed(RouteName.login);
-    _isLogoutLoading.value = false;
+    Get.dialog(
+      AlertDialog(
+        title: const Text('Logout Confirmation'),
+        content: const Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(), // Closes the dialog
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Get.back(); // Closes the dialog
+              _isLogoutLoading.value = true;
+
+              await _userRepository.logout();
+              Get.offAllNamed(RouteName.login);
+              _isLogoutLoading.value = false;
+            },
+            child: const Text('Logout'),
+          ),
+        ],
+      ),
+    );
   }
 }
