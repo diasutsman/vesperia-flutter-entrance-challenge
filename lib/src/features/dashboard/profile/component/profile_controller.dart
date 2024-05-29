@@ -1,5 +1,10 @@
+import 'package:entrance_test/src/constants/color.dart';
+import 'package:entrance_test/src/features/webview/web_view_page.dart';
 import 'package:entrance_test/src/repositories/user_repository.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:get/get.dart';
+import 'package:open_file_plus/open_file_plus.dart';
 
 import '../../../../../app/routes/route_name.dart';
 import '../../../../utils/networking_util.dart';
@@ -70,6 +75,7 @@ class ProfileController extends GetxController {
   }
 
   void onDownloadFileClick() async {
+    SnackbarWidget.showNeutralSnackbar('Downloading...');
     final dio = Dio();
     const url = 'https://www.tutorialspoint.com/flutter/flutter_tutorial.pdf';
 
@@ -87,7 +93,21 @@ class ProfileController extends GetxController {
         final response = await dio.download(url, filePath);
 
         if (response.statusCode == 200) {
-          SnackbarWidget.showSuccessSnackbar('Download completed: $filePath');
+          SnackbarWidget.showSuccessSnackbar(
+            'Download completed',
+            mainButton: TextButton(
+              onPressed: () {
+                OpenFile.open(filePath); // Open the downloaded file
+              },
+              child: const Text(
+                "Open",
+                style: TextStyle(
+                  color: green600,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          );
         } else {
           SnackbarWidget.showFailedSnackbar('Download failed');
         }
@@ -113,7 +133,12 @@ class ProfileController extends GetxController {
     return null;
   }
 
-  onOpenWebPageClick() {}
+  onOpenWebPageClick() {
+    Get.to(
+      () =>
+          const WebViewPage(url: 'https://www.youtube.com/watch?v=lpnKWK-KEYs'),
+    );
+  }
 
   void doLogout() async {
     _isLogoutLoading.value = true;
