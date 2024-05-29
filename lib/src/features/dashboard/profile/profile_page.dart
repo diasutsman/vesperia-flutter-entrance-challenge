@@ -166,7 +166,7 @@ class ProfilePage extends GetView<ProfileController> {
               buttonColor: red50,
               textColor: red600,
               textLabel: "Sign Out",
-              disabled: controller.isLogoutLoading,
+              isLoading: controller.isLogoutLoading,
               onClick: () {
                 controller.doLogout();
               },

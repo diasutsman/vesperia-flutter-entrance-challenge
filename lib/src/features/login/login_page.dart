@@ -243,7 +243,7 @@ class LoginPage extends GetView<LoginController> {
               buttonColor: primary,
               textColor: white,
               textLabel: "Sign In",
-              disabled: controller.isLoadingLogin,
+              isLoading: controller.isLoadingLogin,
               onClick: () {
                 controller.doLogin();
               },

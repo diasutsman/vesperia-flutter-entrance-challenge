@@ -13,6 +13,7 @@ class ButtonIcon extends StatelessWidget {
     required this.textLabel,
     this.side,
     this.disabled = false,
+    this.isLoading = false,
   }) : super(key: key);
 
   final Color? buttonColor;
@@ -25,6 +26,7 @@ class ButtonIcon extends StatelessWidget {
   final String textLabel;
   final BorderSide? side;
   final bool disabled;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,7 @@ class ButtonIcon extends StatelessWidget {
         elevation: 0,
         side: side,
       ),
-      onPressed: disabled
+      onPressed: disabled || isLoading
           ? null
           : () {
               onClick();
@@ -57,14 +59,16 @@ class ButtonIcon extends StatelessWidget {
           : icon != null
               ? Icon(icon, size: iconSize ?? 24)
               : const SizedBox.shrink(),
-      label: Text(
-        textLabel,
-        style: TextStyle(
-          fontSize: 14,
-          color: textColor,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+      label: isLoading
+          ? const CircularProgressIndicator()
+          : Text(
+              textLabel,
+              style: TextStyle(
+                fontSize: 14,
+                color: textColor,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
     );
   }
 }

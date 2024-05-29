@@ -62,7 +62,7 @@ class LoginController extends GetxController {
 
   String? validatePassword(String? value) {
     if (value == null || value.length < 8) {
-      return "Password must be greater than ro equal to 8 characters";
+      return "Password must be greater than or equal to 8 characters";
     }
     return null;
   }
