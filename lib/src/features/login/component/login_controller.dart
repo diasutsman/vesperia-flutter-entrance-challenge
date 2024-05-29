@@ -15,20 +15,45 @@ class LoginController extends GetxController {
   final etPhone = TextEditingController();
   final etPassword = TextEditingController();
 
-  void doLogin() async {
-    if (etPhone.text != '85173254399' || etPassword.text != '12345678') {
-      SnackbarWidget.showFailedSnackbar('Email atau password salah');
-      return;
-    }
-    await _userRepository.login();
-    Get.offAllNamed(RouteName.dashboard);
-  }
+  final _formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> get formKey => _formKey;
 
   final _passwordVisible = false.obs;
 
   bool get passwordVisible => _passwordVisible.value;
 
+  void doLogin() async {
+    if (formKey.currentState?.validate() == false) return;
+
+    if (etPhone.text != '85173254399' || etPassword.text != '12345678') {
+      SnackbarWidget.showFailedSnackbar('Email atau password salah');
+      return;
+    }
+
+    await _userRepository.login();
+    Get.offAllNamed(RouteName.dashboard);
+  }
+
   void togglePasswordVisibility() {
     _passwordVisible.value = !passwordVisible;
+  }
+
+  String? validatePhoneNumber(String? value) {
+    if (value == null || value.length < 8 || value.length > 16) {
+      return "Phone number length must be within 8 to 16 characters";
+    }
+
+    if (!RegExp(r'^[1-9][0-9]*$').hasMatch(value)) {
+      return "Phone number cannot have \"0\" as prefix";
+    }
+
+    return null;
+  }
+
+  String? validatePassword(String? value) {
+    if (value == null || value.length < 8) {
+      return "Password must be greater than ro equal to 8 characters";
+    }
+    return null;
   }
 }
