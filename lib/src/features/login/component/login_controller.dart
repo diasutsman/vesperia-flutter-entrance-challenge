@@ -23,4 +23,12 @@ class LoginController extends GetxController {
     await _userRepository.login();
     Get.offAllNamed(RouteName.dashboard);
   }
+
+  final _passwordVisible = false.obs;
+
+  bool get passwordVisible => _passwordVisible.value;
+
+  void togglePasswordVisibility() {
+    _passwordVisible.value = !passwordVisible;
+  }
 }

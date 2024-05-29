@@ -167,43 +167,53 @@ class LoginPage extends GetView<LoginController> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  TextFormField(
-                    keyboardType: TextInputType.visiblePassword,
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: gray900),
-                    obscureText: true,
-                    cursorColor: primary,
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.only(
-                        left: 12,
-                        right: -14,
-                        top: 20,
-                        bottom: 20,
+                  Obx(
+                    () => TextFormField(
+                      keyboardType: TextInputType.visiblePassword,
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: gray900),
+                      obscureText: !controller.passwordVisible,
+                      cursorColor: primary,
+                      decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          onPressed: controller.togglePasswordVisibility,
+                          icon: Icon(
+                            controller.passwordVisible
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                          ),
+                        ),
+                        contentPadding: const EdgeInsets.only(
+                          left: 12,
+                          right: -14,
+                          top: 20,
+                          bottom: 20,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          borderSide:
+                              const BorderSide(color: gray200, width: 1.5),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                          borderSide:
+                              const BorderSide(color: gray200, width: 1.5),
+                        ),
+                        fillColor: white,
+                        filled: true,
+                        hintText: 'Password',
+                        prefixIcon: const Padding(
+                          padding: EdgeInsets.all(14.0),
+                          child: ImageIcon(
+                            AssetImage(ic_password),
+                          ), // icon is 48px widget.
+                        ),
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide:
-                            const BorderSide(color: gray200, width: 1.5),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                        borderSide:
-                            const BorderSide(color: gray200, width: 1.5),
-                      ),
-                      fillColor: white,
-                      filled: true,
-                      hintText: 'Password',
-                      prefixIcon: const Padding(
-                        padding: EdgeInsets.all(14.0),
-                        child: ImageIcon(
-                          AssetImage(ic_password),
-                        ), // icon is 48px widget.
-                      ),
+                      controller: controller.etPassword,
                     ),
-                    controller: controller.etPassword,
                   ),
                 ],
               ),
