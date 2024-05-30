@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../../../../../models/product_model.dart';
 import '../../../../../models/request/product_list_request_model.dart';
 import '../../../../../repositories/product_repository.dart';
@@ -11,6 +12,11 @@ class ProductListController extends GetxController {
   ProductListController({
     required ProductRepository productRepository,
   }) : _productRepository = productRepository;
+
+  final PagingController<int, ProductModel> _pagingController =
+      PagingController(firstPageKey: 0);
+
+  PagingController<int, ProductModel> get pagingController => _pagingController;
 
   final _products = Rx<List<ProductModel>>([]);
 
@@ -30,52 +36,59 @@ class ProductListController extends GetxController {
 
   //The number which shows how many product already loaded to the device,
   //thus giving the command to ignore the first x number of data when retrieving
-  int _skip = 0;
+  final int _skip = 0;
 
   @override
   void onInit() {
     super.onInit();
-    getProducts();
+    _pagingController.addPageRequestListener((pageKey) {
+      getProducts(pageKey);
+    });
+    // getProducts();
   }
 
   //first load or after refresh.
-  void getProducts() async {
-    _isLoadingRetrieveProduct.value = true;
-    _skip = 0;
+  void getProducts(int page) async {
     try {
       final productList =
           await _productRepository.getProductList(ProductListRequestModel(
         limit: _limit,
-        skip: _skip,
+        skip: page,
       ));
-      _products.value = productList.data;
-      _isLastPageProduct.value = productList.data.length < _limit;
-      _skip = products.length;
+
+      final newItems = productList.data;
+
+      final isLastPage = newItems.length < _limit;
+      if (isLastPage) {
+        _pagingController.appendLastPage(newItems);
+      } else {
+        final nextPageKey = page + _limit;
+        _pagingController.appendPage(newItems, nextPageKey);
+      }
     } catch (error) {
-      SnackbarWidget.showFailedSnackbar(NetworkingUtil.errorMessage(error));
+      _pagingController.error = error;
     }
-    _isLoadingRetrieveProduct.value = false;
   }
 
-  void getMoreProducts() async {
-    if (_isLastPageProduct.value || _isLoadingRetrieveMoreProduct.value) return;
+  // void getMoreProducts() async {
+  //   if (_isLastPageProduct.value || _isLoadingRetrieveMoreProduct.value) return;
 
-    _isLoadingRetrieveMoreProduct.value = true;
+  //   _isLoadingRetrieveMoreProduct.value = true;
 
-    try {
-      final productList =
-          await _productRepository.getProductList(ProductListRequestModel(
-        limit: _limit,
-        skip: _skip,
-      ));
-      _products.value = [..._products.value, ...productList.data];
-      _isLastPageProduct.value = productList.data.length < _limit;
-      _skip = products.length;
-    } catch (error) {
-      SnackbarWidget.showFailedSnackbar(NetworkingUtil.errorMessage(error));
-    }
-    _isLoadingRetrieveMoreProduct.value = false;
-  }
+  //   try {
+  //     final productList =
+  //         await _productRepository.getProductList(ProductListRequestModel(
+  //       limit: _limit,
+  //       skip: _skip,
+  //     ));
+  //     _products.value = [..._products.value, ...productList.data];
+  //     _isLastPageProduct.value = productList.data.length < _limit;
+  //     _skip = products.length;
+  //   } catch (error) {
+  //     SnackbarWidget.showFailedSnackbar(NetworkingUtil.errorMessage(error));
+  //   }
+  //   _isLoadingRetrieveMoreProduct.value = false;
+  // }
 
   void toProductDetail(ProductModel product) async {
     //TODO: finish this implementation by creating product detail page & calling it here
