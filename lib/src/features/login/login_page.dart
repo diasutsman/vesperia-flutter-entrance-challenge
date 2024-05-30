@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_view.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 import '../../constants/color.dart';
 import '../../constants/icon.dart';
@@ -89,56 +89,25 @@ class LoginPage extends GetView<LoginController> {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    TextFormField(
-                      keyboardType: TextInputType.phone,
-                      validator: controller.validatePhoneNumber,
-                      textAlign: TextAlign.start,
-                      style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: gray900),
-                      cursorColor: primary,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide:
-                              const BorderSide(color: gray200, width: 1.5),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide:
-                              const BorderSide(color: gray200, width: 1.5),
-                        ),
-                        fillColor: white,
-                        filled: true,
-                        hintText: 'Phone Number',
-                        prefixIcon: const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 14.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(width: 6),
-                              Text(
-                                '+62',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: gray900),
-                              ),
-                              SizedBox(width: 12),
-                              SizedBox(
-                                width: 1.5,
-                                height: 48,
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(color: gray100),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                    InternationalPhoneNumberInput(
+                      onInputChanged: (PhoneNumber number) {
+                        controller.setCountryCode(number.dialCode ?? '+62');
+                      },
+                      selectorConfig: const SelectorConfig(
+                        selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                        useBottomSheetSafeArea: true,
                       ),
-                      controller: controller.etPhone,
+                      validator: controller.validatePhoneNumber,
+                      ignoreBlank: false,
+                      autoValidateMode: AutovalidateMode.disabled,
+                      selectorTextStyle: const TextStyle(color: Colors.black),
+                      initialValue: PhoneNumber(isoCode: 'ID'),
+                      textFieldController: controller.etPhone,
+                      formatInput: false,
+                      keyboardType: const TextInputType.numberWithOptions(
+                          signed: true, decimal: true),
+                      inputBorder: const OutlineInputBorder(),
+                      spaceBetweenSelectorAndTextField: 4,
                     ),
                   ],
                 ),
@@ -235,19 +204,15 @@ class LoginPage extends GetView<LoginController> {
   Widget loginButton() => SizedBox(
         height: 52,
         width: double.infinity,
-        child: SizedBox(
-          height: 52,
-          width: double.infinity,
-          child: Obx(
-            () => ButtonIcon(
-              buttonColor: primary,
-              textColor: white,
-              textLabel: "Sign In",
-              isLoading: controller.isLoadingLogin,
-              onClick: () {
-                controller.doLogin();
-              },
-            ),
+        child: Obx(
+          () => ButtonIcon(
+            buttonColor: primary,
+            textColor: white,
+            textLabel: "Sign In",
+            isLoading: controller.isLoadingLogin,
+            onClick: () {
+              controller.doLogin();
+            },
           ),
         ),
       );

@@ -27,6 +27,12 @@ class LoginController extends GetxController {
 
   bool get isLoadingLogin => _isLoadingLogin.value;
 
+  final _countryCode = '62'.obs;
+
+  void setCountryCode(String countryCode) {
+    _countryCode.value = countryCode.numericOnly();
+  }
+
   void doLogin() async {
     try {
       _isLoadingLogin.value = true;
@@ -40,6 +46,7 @@ class LoginController extends GetxController {
       await _userRepository.login(
         phoneNumber: phoneNumber,
         password: password,
+        countryCode: _countryCode.value,
       );
       Get.offAllNamed(RouteName.dashboard);
     } catch (error) {
