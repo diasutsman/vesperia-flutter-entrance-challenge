@@ -152,12 +152,18 @@ class ProfileController extends GetxController {
           ),
           TextButton(
             onPressed: () async {
-              Get.back(); // Closes the dialog
-              _isLogoutLoading.value = true;
+              try {
+                Get.back(); // Closes the dialog
+                _isLogoutLoading.value = true;
 
-              await _userRepository.logout();
-              Get.offAllNamed(RouteName.login);
-              _isLogoutLoading.value = false;
+                await _userRepository.logout();
+                Get.offAllNamed(RouteName.login);
+              } catch (error) {
+                SnackbarWidget.showFailedSnackbar(
+                    NetworkingUtil.errorMessage(error));
+              } finally {
+                _isLogoutLoading.value = false;
+              }
             },
             child: const Text('Logout'),
           ),

@@ -1,4 +1,5 @@
 import 'package:entrance_test/src/repositories/user_repository.dart';
+import 'package:entrance_test/src/utils/networking_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
@@ -27,27 +28,25 @@ class LoginController extends GetxController {
   bool get isLoadingLogin => _isLoadingLogin.value;
 
   void doLogin() async {
-    _isLoadingLogin.value = true;
-    if (formKey.currentState?.validate() == false) {
+    try {
+      _isLoadingLogin.value = true;
+      if (formKey.currentState?.validate() == false) {
+        return;
+      }
+
+      String phoneNumber = etPhone.text;
+      String password = etPassword.text;
+
+      await _userRepository.login(
+        phoneNumber: phoneNumber,
+        password: password,
+      );
+      Get.offAllNamed(RouteName.dashboard);
+    } catch (error) {
+      SnackbarWidget.showFailedSnackbar(NetworkingUtil.errorMessage(error));
+    } finally {
       _isLoadingLogin.value = false;
-      return;
     }
-
-    String phoneNumber = etPhone.text;
-    String password = etPassword.text;
-
-    if (phoneNumber != '85173254399' || password != '12345678') {
-      _isLoadingLogin.value = false;
-      SnackbarWidget.showFailedSnackbar('Email atau password salah');
-      return;
-    }
-
-    await _userRepository.login(
-      phoneNumber: phoneNumber,
-      password: password,
-    );
-    Get.offAllNamed(RouteName.dashboard);
-    _isLoadingLogin.value = false;
   }
 
   void togglePasswordVisibility() {
