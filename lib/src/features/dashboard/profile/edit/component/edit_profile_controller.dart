@@ -1,3 +1,4 @@
+import 'package:entrance_test/src/models/request/update_user_request_model.dart';
 import 'package:entrance_test/src/repositories/user_repository.dart';
 import 'package:entrance_test/src/utils/string_ext.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,9 @@ class EditProfileController extends GetxController {
   EditProfileController({
     required UserRepository userRepository,
   }) : _userRepository = userRepository;
+
+  final _formKey = GlobalKey<FormState>();
+  GlobalKey<FormState> get formKey => _formKey;
 
   final etFullName = TextEditingController();
   final etPhoneNumber = TextEditingController();
@@ -42,6 +46,43 @@ class EditProfileController extends GetxController {
   bool get isGenderFemale => _isGenderFemale.value;
 
   DateTime birthDate = DateTime.now();
+
+  final _isUpdateProfileLoading = false.obs;
+  bool get isUpdateProfileLoading => _isUpdateProfileLoading.value;
+
+  String? validateFullName(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Cannot be empty.";
+    }
+    return null;
+  }
+
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Cannot be empty.";
+    }
+
+    if (!RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(value)) {
+      return "Invalid email.";
+    }
+    return null;
+  }
+
+  String? validateHeight(String? value) {
+    if (value != null && value != '' && (int.tryParse(value) ?? -1) < 0) {
+      return "cannot be negative.";
+    }
+    return null;
+  }
+
+  String? validateWeight(String? value) {
+    if (value != null && value != '' && (int.tryParse(value) ?? -1) < 0) {
+      return "Cannot be negative.";
+    }
+    return null;
+  }
 
   @override
   void onInit() {
@@ -74,14 +115,16 @@ class EditProfileController extends GetxController {
 
         etBirthDate.text = '';
         if (localUser.dateOfBirth.isNullOrEmpty == false) {
-          birthDate = DateUtil.getDateFromShortServerFormat(localUser.dateOfBirth!);
+          birthDate =
+              DateUtil.getDateFromShortServerFormat(localUser.dateOfBirth!);
           etBirthDate.text = DateUtil.getBirthDate(birthDate);
         }
       } else {
         SnackbarWidget.showFailedSnackbar(response.message);
       }
-    } catch (error) {
+    } catch (error, stacktrace) {
       error.printError();
+      print(stacktrace);
       SnackbarWidget.showFailedSnackbar(NetworkingUtil.errorMessage(error));
     }
   }
@@ -105,6 +148,28 @@ class EditProfileController extends GetxController {
   }
 
   void saveData() async {
-    //TODO: Implement edit user API
+    try {
+      if (formKey.currentState?.validate() == false) return;
+
+      _isUpdateProfileLoading.value = true;
+      await _userRepository.updateProfile(
+        UpdateUserRequestModel(
+          name: etFullName.text,
+          email: etEmail.text,
+          height: int.tryParse(etHeight.text),
+          weight: int.tryParse(etWeight.text),
+          dateOfBirth: DateUtil.getDateFromBirthDateFormat(etBirthDate.text),
+          gender: _gender.value,
+          profilePicture: profilePictureUrlOrPath,
+        ),
+      );
+      SnackbarWidget.showSuccessSnackbar("Profile updated!");
+    } catch (error, stacktrace) {
+      print(error);
+      print(stacktrace);
+      SnackbarWidget.showFailedSnackbar(NetworkingUtil.errorMessage(error));
+    } finally {
+      _isUpdateProfileLoading.value = false;
+    }
   }
 }

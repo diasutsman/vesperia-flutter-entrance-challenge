@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:entrance_test/src/constants/local_data_key.dart';
+import 'package:entrance_test/src/models/request/update_user_request_model.dart';
 import 'package:entrance_test/src/models/response/login_response_model.dart';
 import 'package:entrance_test/src/models/response/logout_response_model.dart';
+import 'package:entrance_test/src/models/response/update_user_response_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -79,6 +81,27 @@ class UserRepository {
       );
       final model = UserResponseModel.fromJson(responseJson.data);
       return model;
+    } on DioException catch (_) {
+      rethrow;
+    }
+  }
+
+  Future<UpdateUserResponseModel> updateProfile(
+    UpdateUserRequestModel request,
+  ) async {
+    try {
+      String endpoint = Endpoint.updateProfile;
+      final responseJson = await _client.post(
+        endpoint,
+        data: FormData.fromMap({
+          ...request.toJson(),
+          '_method': 'PUT',
+          'profile_picture': null,
+        }),
+        options: NetworkingUtil.setupNetworkOptions(
+            'Bearer ${_local.read(LocalDataKey.token)}'),
+      );
+      return UpdateUserResponseModel.fromJson(responseJson.data);
     } on DioException catch (_) {
       rethrow;
     }

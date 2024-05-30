@@ -10,6 +10,7 @@ class DateUtil {
   static const int YEAR_MILLIS = MONTH_MILLIS * 12;
 
   static const _shortServerFormat = "yyyy-MM-dd";
+  static const _birthDateFormat = "dd MMMM yyyy";
 
   static DateTime getDateFromCurrent() => DateTime.now();
 
@@ -19,8 +20,11 @@ class DateUtil {
   static String getShortServerFormatDateString(DateTime date) =>
       DateFormat(_shortServerFormat).format(date);
 
+  static DateTime getDateFromBirthDateFormat(String date) =>
+      DateFormat(_birthDateFormat).parse(date);
+
   static String getBirthDate(DateTime date) =>
-      DateFormat("dd MMMM yyyy", "en_EN").format(date.toLocal());
+      DateFormat(_birthDateFormat, "en_EN").format(date.toLocal());
 
   static String getTimeAgo(DateTime date) {
     var time = date.millisecondsSinceEpoch;
