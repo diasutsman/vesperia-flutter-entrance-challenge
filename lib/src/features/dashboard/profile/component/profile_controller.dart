@@ -3,6 +3,7 @@ import 'package:entrance_test/src/features/webview/web_view_page.dart';
 import 'package:entrance_test/src/repositories/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 

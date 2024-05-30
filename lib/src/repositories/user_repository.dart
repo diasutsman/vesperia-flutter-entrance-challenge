@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:entrance_test/src/constants/local_data_key.dart';
 import 'package:entrance_test/src/models/response/login_response_model.dart';
 import 'package:entrance_test/src/models/response/logout_response_model.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../constants/endpoint.dart';
@@ -92,6 +93,7 @@ class UserRepository {
       final realToken = _local.read<String?>(LocalDataKey.token);
       await _local.write(
           LocalDataKey.token, '619|kM5YBY5yM15KEuSmSMaEzlfv0lWs83r4cp4oty2T');
+
       getUser();
       //401 not caught as exception
       await _local.write(LocalDataKey.token, realToken);
