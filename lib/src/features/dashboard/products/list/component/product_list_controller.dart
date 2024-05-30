@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-
 import '../../../../../models/product_model.dart';
 import '../../../../../models/request/product_list_request_model.dart';
 import '../../../../../repositories/product_repository.dart';
@@ -18,22 +17,13 @@ class ProductListController extends GetxController {
   List<ProductModel> get products => _products.value;
 
   final _isLoadingRetrieveProduct = false.obs;
-
   bool get isLoadingRetrieveProduct => _isLoadingRetrieveProduct.value;
 
   final _isLoadingRetrieveMoreProduct = false.obs;
-
   bool get isLoadingRetrieveMoreProduct => _isLoadingRetrieveMoreProduct.value;
 
-  final _isLoadingRetrieveCategory = false.obs;
-
-  bool get isLoadingRetrieveCategory => _isLoadingRetrieveCategory.value;
-
-  final _canFilterCategory = true.obs;
-
-  bool get canFilterCategory => _canFilterCategory.value;
-
   final _isLastPageProduct = false.obs;
+  bool get isLastPageProduct => _isLastPageProduct.value;
 
   //The number of product retrieved each time a call is made to server
   final _limit = 10;
@@ -59,7 +49,6 @@ class ProductListController extends GetxController {
         skip: _skip,
       ));
       _products.value = productList.data;
-      _products.refresh();
       _isLastPageProduct.value = productList.data.length < _limit;
       _skip = products.length;
     } catch (error) {
@@ -73,8 +62,18 @@ class ProductListController extends GetxController {
 
     _isLoadingRetrieveMoreProduct.value = true;
 
-    //TODO: finish this function by calling get product list with appropriate parameters
-
+    try {
+      final productList =
+          await _productRepository.getProductList(ProductListRequestModel(
+        limit: _limit,
+        skip: _skip,
+      ));
+      _products.value = [..._products.value, ...productList.data];
+      _isLastPageProduct.value = productList.data.length < _limit;
+      _skip = products.length;
+    } catch (error) {
+      SnackbarWidget.showFailedSnackbar(NetworkingUtil.errorMessage(error));
+    }
     _isLoadingRetrieveMoreProduct.value = false;
   }
 
