@@ -25,12 +25,6 @@ class ProductListPage extends GetWidget<ProductListController> {
             },
             child: NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification scrollInfo) {
-                // print(
-                //     "scrollInfo.metrics.extentTotal: ${scrollInfo.metrics.extentTotal}");
-                // print(
-                //     "scrollInfo.metrics.extentBefore: ${scrollInfo.metrics.extentBefore}");
-                // print(
-                    // "scrollInfo.metrics.extentAfter: ${scrollInfo.metrics.extentAfter}");
                 if (scrollInfo.metrics.pixels >=
                         scrollInfo.metrics.maxScrollExtent - 500 &&
                     !controller.isLoadingRetrieveMoreProduct &&
