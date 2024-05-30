@@ -45,6 +45,10 @@ class EditProfileController extends GetxController {
 
   bool get isGenderFemale => _isGenderFemale.value;
 
+  final _isSuccessfullyEdited = false.obs;
+
+  bool get isSuccessfullyEdited => _isSuccessfullyEdited.value;
+
   DateTime birthDate = DateTime.now();
 
   final _isUpdateProfileLoading = false.obs;
@@ -87,6 +91,7 @@ class EditProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _isSuccessfullyEdited.value = false;
     loadUserFromServer();
   }
 
@@ -163,7 +168,8 @@ class EditProfileController extends GetxController {
           profilePicture: profilePictureUrlOrPath,
         ),
       );
-      SnackbarWidget.showSuccessSnackbar("Profile updated!");
+      _isSuccessfullyEdited.value = true;
+      SnackbarWidget.showSuccessSnackbar("Profile updated!", seconds: 1);
     } catch (error, stacktrace) {
       print(error);
       print(stacktrace);

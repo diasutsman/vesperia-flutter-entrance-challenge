@@ -39,25 +39,27 @@ class ProfilePage extends GetView<ProfileController> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Obx(() => ClipOval(
-                                child: CachedNetworkImage(
+                          Obx(
+                            () => ClipOval(
+                              child: CachedNetworkImage(
+                                width: 48,
+                                height: 48,
+                                imageUrl: controller.profilePictureUrl,
+                                fit: BoxFit.cover,
+                                progressIndicatorBuilder:
+                                    (context, url, downloadProgress) =>
+                                        CircularProgressIndicator(
+                                            value: downloadProgress.progress),
+                                errorWidget: (context, url, error) =>
+                                    Image.asset(
                                   width: 48,
                                   height: 48,
-                                  imageUrl: controller.profilePictureUrl,
+                                  defaultProfileImage,
                                   fit: BoxFit.cover,
-                                  progressIndicatorBuilder:
-                                      (context, url, downloadProgress) =>
-                                          CircularProgressIndicator(
-                                              value: downloadProgress.progress),
-                                  errorWidget: (context, url, error) =>
-                                      Image.asset(
-                                    width: 48,
-                                    height: 48,
-                                    defaultProfileImage,
-                                    fit: BoxFit.cover,
-                                  ),
                                 ),
-                              )),
+                              ),
+                            ),
+                          ),
                           const SizedBox(width: 16),
                           Expanded(
                               child: Column(

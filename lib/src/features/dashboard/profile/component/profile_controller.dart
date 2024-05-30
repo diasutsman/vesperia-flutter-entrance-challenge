@@ -64,7 +64,10 @@ class ProfileController extends GetxController {
   }
 
   onEditProfileClick() async {
-    Get.toNamed(RouteName.editProfile);
+    bool isSuccessfullyEdited = await Get.toNamed(RouteName.editProfile);
+    if (isSuccessfullyEdited) {
+      loadUserFromServer();
+    }
   }
 
   /*
