@@ -25,11 +25,16 @@ class ProductListPage extends GetWidget<ProductListController> {
             },
             child: NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification scrollInfo) {
-                if (scrollInfo.metrics.pixels ==
-                        scrollInfo.metrics.maxScrollExtent &&
+                // print(
+                //     "scrollInfo.metrics.extentTotal: ${scrollInfo.metrics.extentTotal}");
+                // print(
+                //     "scrollInfo.metrics.extentBefore: ${scrollInfo.metrics.extentBefore}");
+                // print(
+                    // "scrollInfo.metrics.extentAfter: ${scrollInfo.metrics.extentAfter}");
+                if (scrollInfo.metrics.pixels >=
+                        scrollInfo.metrics.maxScrollExtent - 500 &&
                     !controller.isLoadingRetrieveMoreProduct &&
                     !controller.isLastPageProduct) {
-                  print('Reached the bottom, fetching more products...');
                   controller.getMoreProducts();
                   return true;
                 }
@@ -66,8 +71,14 @@ class ProductListPage extends GetWidget<ProductListController> {
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
         shrinkWrap: true,
-        itemCount: controller.products.length,
+        itemCount: controller.products.length +
+            (controller.isLoadingRetrieveMoreProduct ? 2 : 0),
         builder: (context, index) {
+          if (index >= controller.products.length) {
+            return const FooterLoadingIndicator(
+              isLoading: true,
+            );
+          }
           final product = controller.products[index];
           return Container(
             margin: EdgeInsets.only(
