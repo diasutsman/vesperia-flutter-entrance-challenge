@@ -1,5 +1,10 @@
+import 'dart:collection';
+
 import 'package:dio/dio.dart';
+import 'package:entrance_test/src/databases/favorite_database.dart';
+import 'package:entrance_test/src/models/product_model.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../constants/endpoint.dart';
 import '../constants/local_data_key.dart';
@@ -10,10 +15,15 @@ import '../utils/networking_util.dart';
 class FavoriteRepository {
   final Dio _client;
   final GetStorage _local;
+  final FavoriteDatabase _favoriteDatabase;
 
-  FavoriteRepository({required Dio client, required GetStorage local})
-      : _client = client,
-        _local = local;
+  FavoriteRepository({
+    required Dio client,
+    required GetStorage local,
+    required FavoriteDatabase favoriteDatabase,
+  })  : _client = client,
+        _local = local,
+        _favoriteDatabase = favoriteDatabase;
 
   Future<ProductListResponseModel> getProductList(
       ProductListRequestModel request) async {
@@ -25,9 +35,28 @@ class FavoriteRepository {
         options: NetworkingUtil.setupNetworkOptions(
             'Bearer ${_local.read(LocalDataKey.token)}'),
       );
-      return ProductListResponseModel.fromJson(responseJson.data);
+
+      final liked = await _favoriteDatabase.getLikedProductIds();
+
+      print("liked: $liked");
+
+      responseJson.data['data'] =
+          (responseJson.data['data'] as List).where((e) {
+        print(e['id']);
+        return liked.contains(e['id']);
+      }).toList();
+
+      return ProductListResponseModel.fromJson(responseJson.data, liked: liked);
     } on DioError catch (_) {
       rethrow;
     }
+  }
+
+  like(ProductModel product) {
+    _favoriteDatabase.like(product);
+  }
+
+  dislike(ProductModel product) {
+    _favoriteDatabase.dislike(product);
   }
 }

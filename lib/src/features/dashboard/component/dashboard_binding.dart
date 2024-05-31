@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:entrance_test/src/databases/favorite_database.dart';
 import 'package:entrance_test/src/features/dashboard/component/dashboard_controller.dart';
 import 'package:entrance_test/src/features/dashboard/favorites/component/favorite_list_controller.dart';
 import 'package:entrance_test/src/features/dashboard/products/list/component/product_list_controller.dart';
@@ -13,6 +14,8 @@ import '../profile/component/profile_controller.dart';
 class DashboardBinding extends Bindings {
   @override
   void dependencies() {
+    Get.put(FavoriteDatabase()..init());
+
     Get.put(UserRepository(
       client: Get.find<Dio>(),
       local: Get.find<GetStorage>(),
@@ -21,9 +24,11 @@ class DashboardBinding extends Bindings {
     Get.put(ProductRepository(
       client: Get.find<Dio>(),
       local: Get.find<GetStorage>(),
+      favoriteDatabase: Get.find<FavoriteDatabase>(),
     ));
 
     Get.put(FavoriteRepository(
+      favoriteDatabase: Get.find<FavoriteDatabase>(),
       client: Get.find<Dio>(),
       local: Get.find<GetStorage>(),
     ));

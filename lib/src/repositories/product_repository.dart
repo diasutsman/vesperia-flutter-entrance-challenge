@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:entrance_test/src/databases/favorite_database.dart';
+import 'package:entrance_test/src/models/product_model.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../constants/endpoint.dart';
@@ -10,10 +12,15 @@ import '../utils/networking_util.dart';
 class ProductRepository {
   final Dio _client;
   final GetStorage _local;
+  final FavoriteDatabase _favoriteDatabase;
 
-  ProductRepository({required Dio client, required GetStorage local})
-      : _client = client,
-        _local = local;
+  ProductRepository({
+    required Dio client,
+    required GetStorage local,
+    required FavoriteDatabase favoriteDatabase,
+  })  : _client = client,
+        _local = local,
+        _favoriteDatabase = favoriteDatabase;
 
   Future<ProductListResponseModel> getProductList(
       ProductListRequestModel request) async {
@@ -25,9 +32,19 @@ class ProductRepository {
         options: NetworkingUtil.setupNetworkOptions(
             'Bearer ${_local.read(LocalDataKey.token)}'),
       );
-      return ProductListResponseModel.fromJson(responseJson.data);
+      final liked = await _favoriteDatabase.getLikedProductIds();
+
+      return ProductListResponseModel.fromJson(responseJson.data, liked: liked);
     } on DioError catch (_) {
       rethrow;
     }
+  }
+
+  like(ProductModel product) {
+    _favoriteDatabase.like(product);
+  }
+
+  dislike(ProductModel product) {
+    _favoriteDatabase.dislike(product);
   }
 }

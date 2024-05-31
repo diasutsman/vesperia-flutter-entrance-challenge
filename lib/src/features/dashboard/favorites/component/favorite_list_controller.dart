@@ -1,3 +1,4 @@
+import 'package:entrance_test/src/features/dashboard/products/list/component/product_list_controller.dart';
 import 'package:entrance_test/src/repositories/favorite_repository.dart';
 import 'package:get/get.dart';
 import 'package:entrance_test/src/models/product_model.dart';
@@ -52,7 +53,9 @@ class FavoriteListController extends GetxController {
       _products.value = productList.data;
       _isLastPageProduct.value = productList.data.length < _limit;
       _skip = products.length;
-    } catch (error) {
+    } catch (error, st) {
+      print(error);
+      print(st);
       SnackbarWidget.showFailedSnackbar(NetworkingUtil.errorMessage(error));
     }
     _isLoadingRetrieveProduct.value = false;
@@ -72,7 +75,9 @@ class FavoriteListController extends GetxController {
       _products.value = [..._products.value, ...productList.data];
       _isLastPageProduct.value = productList.data.length < _limit;
       _skip = products.length;
-    } catch (error) {
+    } catch (error, st) {
+      print(error);
+      print(st);
       SnackbarWidget.showFailedSnackbar(NetworkingUtil.errorMessage(error));
     }
     _isLoadingRetrieveMoreProduct.value = false;
@@ -83,6 +88,12 @@ class FavoriteListController extends GetxController {
   }
 
   void setFavorite(ProductModel product) {
-    product.isFavorite = !product.isFavorite;
+    if (product.isFavorite = !product.isFavorite) {
+      _favoriteRepository.like(product);
+    } else {
+      _favoriteRepository.dislike(product);
+    }
+    Get.find<ProductListController>().getProducts();
+    getProducts();
   }
 }

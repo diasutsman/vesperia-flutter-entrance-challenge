@@ -34,35 +34,35 @@ class ProductModel {
   set isFavorite(bool newValue) => _isFavorite.value = newValue;
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
-    id: json['id'],
-    name: json['name'],
-    images: (json['images'] as List<dynamic>?)
-        ?.map((e) => ProductImageModel.fromJson(e))
-        .toList(),
-    price: json['price'],
-    discountPrice: json['price_after_discount'],
-    isPrescriptionDrugs: json['is_prescription_drugs'],
-    description: json['description'],
-    returnTerms: json['refund_terms_and_condition'],
-    ratingAverage: json['rating_average'],
-    ratingCount: json['rating_count'],
-    reviewCount: json['review_count'],
-  );
+        id: json['id'],
+        name: json['name'],
+        images: (json['images'] as List<dynamic>?)
+            ?.map((e) => ProductImageModel.fromJson(e))
+            .toList(),
+        price: json['price'],
+        discountPrice: json['price_after_discount'],
+        isPrescriptionDrugs: json['is_prescription_drugs'],
+        description: json['description'],
+        returnTerms: json['refund_terms_and_condition'],
+        ratingAverage: json['rating_average'],
+        ratingCount: json['rating_count'],
+        reviewCount: json['review_count'],
+      );
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'name': name,
-    'images': images,
-    'price': price,
-    'price_after_discount': discountPrice,
-    if (isPrescriptionDrugs != null)
-      'is_prescription_drugs': isPrescriptionDrugs,
-    if (description != null) 'description': description,
-    if (returnTerms != null) 'refund_terms_and_condition': returnTerms,
-    if (ratingAverage != null) 'rating_average': ratingAverage,
-    if (ratingCount != null) 'rating_count': ratingCount,
-    if (reviewCount != null) 'review_count': reviewCount,
-  };
+        'id': id,
+        'name': name,
+        'images': images,
+        'price': price,
+        'price_after_discount': discountPrice,
+        if (isPrescriptionDrugs != null)
+          'is_prescription_drugs': isPrescriptionDrugs,
+        if (description != null) 'description': description,
+        if (returnTerms != null) 'refund_terms_and_condition': returnTerms,
+        if (ratingAverage != null) 'rating_average': ratingAverage,
+        if (ratingCount != null) 'rating_count': ratingCount,
+        if (reviewCount != null) 'review_count': reviewCount,
+      };
 }
 
 enum ProductSort {
@@ -94,24 +94,36 @@ extension SortExtension on ProductSort {
 
 class SortType {
   static String getSortByValue(ProductSort sort) {
-    switch(sort){
-      case ProductSort.newest: return 'created_at';
-      case ProductSort.nameAscending: return 'name';
-      case ProductSort.nameDescending: return 'name';
-      case ProductSort.priceAscending: return 'price';
-      case ProductSort.priceDescending: return 'price';
-      default: return 'id';
+    switch (sort) {
+      case ProductSort.newest:
+        return 'created_at';
+      case ProductSort.nameAscending:
+        return 'name';
+      case ProductSort.nameDescending:
+        return 'name';
+      case ProductSort.priceAscending:
+        return 'price';
+      case ProductSort.priceDescending:
+        return 'price';
+      default:
+        return 'id';
     }
   }
 
   static String getSortColumnValue(ProductSort sort) {
-    switch(sort){
-      case ProductSort.newest: return 'desc';
-      case ProductSort.nameAscending: return 'asc';
-      case ProductSort.nameDescending: return 'desc';
-      case ProductSort.priceAscending: return 'asc';
-      case ProductSort.priceDescending: return 'desc';
-      default: return 'asc';
+    switch (sort) {
+      case ProductSort.newest:
+        return 'desc';
+      case ProductSort.nameAscending:
+        return 'asc';
+      case ProductSort.nameDescending:
+        return 'desc';
+      case ProductSort.priceAscending:
+        return 'asc';
+      case ProductSort.priceDescending:
+        return 'desc';
+      default:
+        return 'asc';
     }
   }
 }

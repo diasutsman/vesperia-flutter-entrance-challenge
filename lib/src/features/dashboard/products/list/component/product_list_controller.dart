@@ -1,3 +1,4 @@
+import 'package:entrance_test/src/features/dashboard/favorites/component/favorite_list_controller.dart';
 import 'package:get/get.dart';
 import '../../../../../models/product_model.dart';
 import '../../../../../models/request/product_list_request_model.dart';
@@ -82,6 +83,11 @@ class ProductListController extends GetxController {
   }
 
   void setFavorite(ProductModel product) {
-    product.isFavorite = !product.isFavorite;
+    if (product.isFavorite = !product.isFavorite) {
+      _productRepository.like(product);
+    } else {
+      _productRepository.dislike(product);
+    }
+    // Get.find<FavoriteListController>().getProducts();
   }
 }
