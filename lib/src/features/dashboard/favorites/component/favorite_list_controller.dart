@@ -28,7 +28,7 @@ class FavoriteListController extends GetxController {
   bool get isLastPageProduct => _isLastPageProduct.value;
 
   //The number of product retrieved each time a call is made to server
-  final _limit = 10;
+  final _limit = 10000;
 
   //The number which shows how many product already loaded to the device,
   //thus giving the command to ignore the first x number of data when retrieving

@@ -27,17 +27,16 @@ create table $_tableFavorites (
   }
 
   Future<void> like(ProductModel product) async {
-    print("product id = ${product.id}");
-    // List<Map> fav = await db.query(
-    //   _tableFavorites,
-    //   columns: [_columnId],
-    //   where: '$_columnId = ?',
-    //   whereArgs: [product.id],
-    // );
-    // //* Means it's already added
-    // if (fav.isNotEmpty) {
-    //   return;
-    // }
+    List<Map> fav = await db.query(
+      _tableFavorites,
+      columns: [_columnId],
+      where: '$_columnId = ?',
+      whereArgs: [product.id],
+    );
+    //* Means it's already added
+    if (fav.isNotEmpty) {
+      return;
+    }
 
     await db.insert(_tableFavorites, {
       _columnId: product.id,
@@ -50,17 +49,16 @@ create table $_tableFavorites (
   }
 
   Future<int> dislike(ProductModel product) async {
-    print("product id = ${product.id}");
-    // List<Map> fav = await db.query(
-    //   _tableFavorites,
-    //   columns: [_columnId],
-    //   where: '$_columnId = ?',
-    //   whereArgs: [product.id],
-    // );
-    // //* Means it's not in the table
-    // if (fav.isEmpty) {
-    //   return -1;
-    // }
+    List<Map> fav = await db.query(
+      _tableFavorites,
+      columns: [_columnId],
+      where: '$_columnId = ?',
+      whereArgs: [product.id],
+    );
+    //* Means it's not in the table
+    if (fav.isEmpty) {
+      return -1;
+    }
     return await db.delete(
       _tableFavorites,
       where: '$_columnId = ?',

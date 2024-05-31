@@ -38,13 +38,9 @@ class FavoriteRepository {
 
       final liked = await _favoriteDatabase.getLikedProductIds();
 
-      print("liked: $liked");
-
-      responseJson.data['data'] =
-          (responseJson.data['data'] as List).where((e) {
-        print(e['id']);
-        return liked.contains(e['id']);
-      }).toList();
+      responseJson.data['data'] = (responseJson.data['data'] as List)
+          .where((e) => liked.contains(e['id']))
+          .toList();
 
       return ProductListResponseModel.fromJson(responseJson.data, liked: liked);
     } on DioError catch (_) {

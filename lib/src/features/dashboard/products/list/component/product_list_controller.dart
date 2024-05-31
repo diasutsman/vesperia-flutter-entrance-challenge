@@ -88,6 +88,6 @@ class ProductListController extends GetxController {
     } else {
       _productRepository.dislike(product);
     }
-    // Get.find<FavoriteListController>().getProducts();
+    Get.find<FavoriteListController>().getProducts();
   }
 }
