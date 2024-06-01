@@ -13,46 +13,36 @@ import '../models/response/product_list_response_model.dart';
 import '../utils/networking_util.dart';
 
 class FavoriteRepository {
-  final Dio _client;
-  final GetStorage _local;
   final FavoriteDatabase _favoriteDatabase;
 
   FavoriteRepository({
-    required Dio client,
-    required GetStorage local,
     required FavoriteDatabase favoriteDatabase,
-  })  : _client = client,
-        _local = local,
-        _favoriteDatabase = favoriteDatabase;
+  }) : _favoriteDatabase = favoriteDatabase;
 
   Future<ProductListResponseModel> getProductList(
       ProductListRequestModel request) async {
     try {
-      String endpoint = Endpoint.getProductList;
-      final responseJson = await _client.get(
-        endpoint,
-        data: request,
-        options: NetworkingUtil.setupNetworkOptions(
-            'Bearer ${_local.read(LocalDataKey.token)}'),
-      );
+      final products = await _favoriteDatabase.getLikedProducts(request);
 
-      final liked = await _favoriteDatabase.getLikedProductIds();
+      final productListResponseModel = ProductListResponseModel.fromJson({
+        'data': products.map((e) => e.toJson()).toList(),
+      });
 
-      responseJson.data['data'] = (responseJson.data['data'] as List)
-          .where((e) => liked.contains(e['id']))
-          .toList();
+      for (final product in productListResponseModel.data) {
+        product.isFavorite = true;
+      }
 
-      return ProductListResponseModel.fromJson(responseJson.data, liked: liked);
-    } on DioError catch (_) {
+      return productListResponseModel;
+    } catch (_) {
       rethrow;
     }
   }
 
-  like(ProductModel product) {
-    _favoriteDatabase.like(product);
+  Future<void> like(ProductModel product) {
+    return _favoriteDatabase.like(product);
   }
 
-  dislike(ProductModel product) {
-    _favoriteDatabase.dislike(product);
+  Future<void> dislike(ProductModel product) {
+    return _favoriteDatabase.dislike(product);
   }
 }

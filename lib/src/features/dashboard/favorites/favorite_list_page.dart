@@ -211,7 +211,6 @@ class FooterLoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('FooterLoadingIndicator isLoading: $isLoading');
     return Center(
       child: isLoading
           ? const Padding(

@@ -10,18 +10,13 @@ class ProductListResponseModel {
   final String message;
   final List<ProductModel> data;
 
-  factory ProductListResponseModel.fromJson(Map<String, dynamic> json,
-          {HashSet<String>? liked}) =>
+  factory ProductListResponseModel.fromJson(Map<String, dynamic> json) =>
       ProductListResponseModel(
-        status: json['status'],
-        message: json['message'],
+        status: json['status'] ?? 0,
+        message: json['message'] ?? 'success',
         data: List<ProductModel>.from(
-                json['data'].map((x) => ProductModel.fromJson(x)))
-            // .where((x) => liked?.contains(x.id) == true)
-            .map((e) {
-          e.isFavorite = liked?.contains(e.id) ?? false;
-          return e;
-        }).toList(),
+          json['data'].map((x) => ProductModel.fromJson(x)),
+        ).toList(),
       );
 
   Map<String, dynamic> toJson() => {

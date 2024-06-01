@@ -82,12 +82,14 @@ class ProductListController extends GetxController {
     //TODO: finish this implementation by creating product detail page & calling it here
   }
 
-  void setFavorite(ProductModel product) {
+  void setFavorite(ProductModel product) async {
     if (product.isFavorite = !product.isFavorite) {
-      _productRepository.like(product);
+      await _productRepository.like(product);
     } else {
-      _productRepository.dislike(product);
+      await _productRepository.dislike(product);
     }
+
+    //* Only to reload favorite list, probably there are better ways to do this
     Get.find<FavoriteListController>().getProducts();
   }
 }

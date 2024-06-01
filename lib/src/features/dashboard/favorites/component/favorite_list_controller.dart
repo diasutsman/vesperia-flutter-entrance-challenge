@@ -28,7 +28,7 @@ class FavoriteListController extends GetxController {
   bool get isLastPageProduct => _isLastPageProduct.value;
 
   //The number of product retrieved each time a call is made to server
-  final _limit = 10000;
+  final _limit = 10;
 
   //The number which shows how many product already loaded to the device,
   //thus giving the command to ignore the first x number of data when retrieving
@@ -42,6 +42,7 @@ class FavoriteListController extends GetxController {
 
   //first load or after refresh.
   void getProducts() async {
+    print('getProducts in FavoriteListController');
     _isLoadingRetrieveProduct.value = true;
     _skip = 0;
     try {
@@ -62,6 +63,7 @@ class FavoriteListController extends GetxController {
   }
 
   void getMoreProducts() async {
+    print('favoriteList getMoreProducts');
     if (_isLastPageProduct.value || _isLoadingRetrieveMoreProduct.value) return;
 
     _isLoadingRetrieveMoreProduct.value = true;
@@ -87,13 +89,15 @@ class FavoriteListController extends GetxController {
     //TODO: finish this implementation by creating product detail page & calling it here
   }
 
-  void setFavorite(ProductModel product) {
+  void setFavorite(ProductModel product) async {
     if (product.isFavorite = !product.isFavorite) {
-      _favoriteRepository.like(product);
+      await _favoriteRepository.like(product);
     } else {
-      _favoriteRepository.dislike(product);
+      await _favoriteRepository.dislike(product);
     }
-    Get.find<ProductListController>().getProducts();
+
+    //* Only to reload favorite list, probably there are better ways to do this
     getProducts();
+    Get.find<ProductListController>().getProducts();
   }
 }

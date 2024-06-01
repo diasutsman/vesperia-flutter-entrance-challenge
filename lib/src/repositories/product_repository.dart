@@ -32,19 +32,29 @@ class ProductRepository {
         options: NetworkingUtil.setupNetworkOptions(
             'Bearer ${_local.read(LocalDataKey.token)}'),
       );
-      final liked = await _favoriteDatabase.getLikedProductIds();
 
-      return ProductListResponseModel.fromJson(responseJson.data, liked: liked);
+      final productListResponseModel =
+          ProductListResponseModel.fromJson(responseJson.data);
+
+      final likedIds = await _favoriteDatabase.getLikedProductIDsSet();
+
+      for (final product in productListResponseModel.data) {
+        if (likedIds.contains(product.id)) {
+          product.isFavorite = true;
+        }
+      }
+
+      return productListResponseModel;
     } on DioError catch (_) {
       rethrow;
     }
   }
 
-  like(ProductModel product) {
-    _favoriteDatabase.like(product);
+  Future<void> like(ProductModel product) {
+    return _favoriteDatabase.like(product);
   }
 
-  dislike(ProductModel product) {
-    _favoriteDatabase.dislike(product);
+  Future<void> dislike(ProductModel product) {
+    return _favoriteDatabase.dislike(product);
   }
 }

@@ -1,15 +1,16 @@
 import 'package:entrance_test/app/routes/route_name.dart';
+import 'package:entrance_test/src/constants/local_data_key.dart';
 import 'package:entrance_test/src/repositories/user_repository.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:get_storage/get_storage.dart';
 
 class SplashscreenController extends GetxController {
-  final UserRepository _userRepository;
-
+  final GetStorage _local;
   SplashscreenController({
-    required UserRepository userRepository,
-  }) : _userRepository = userRepository;
+    required GetStorage local,
+  }) : _local = local;
   @override
   void onInit() {
     super.onInit();
@@ -33,12 +34,10 @@ class SplashscreenController extends GetxController {
       const Duration(seconds: 3),
     );
 
-    try {
-      //* Get user using current token
-      await _userRepository.getUser();
-      //* If no error occured then go to dashboard
+    //* if token exists then go to dashboard
+    if (_local.hasData(LocalDataKey.token)) {
       Get.offAllNamed(RouteName.dashboard);
-    } catch (e) {
+    } else {
       //* Else, go to login
       Get.offAllNamed(RouteName.login);
     }

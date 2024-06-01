@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:entrance_test/src/constants/local_data_key.dart';
+import 'package:entrance_test/src/databases/favorite_database.dart';
 import 'package:entrance_test/src/models/request/update_user_request_model.dart';
 import 'package:entrance_test/src/models/response/login_response_model.dart';
 import 'package:entrance_test/src/models/response/logout_response_model.dart';
@@ -14,10 +15,15 @@ import '../utils/networking_util.dart';
 class UserRepository {
   final Dio _client;
   final GetStorage _local;
+  final FavoriteDatabase _favoriteDatabase;
 
-  UserRepository({required Dio client, required GetStorage local})
-      : _client = client,
-        _local = local;
+  UserRepository({
+    required Dio client,
+    required GetStorage local,
+    required FavoriteDatabase favoriteDatabase,
+  })  : _client = client,
+        _local = local,
+        _favoriteDatabase = favoriteDatabase;
 
   Future<LoginResponseModel> login({
     required String phoneNumber,
@@ -66,6 +72,7 @@ class UserRepository {
       _local.remove(
         LocalDataKey.token,
       );
+      _favoriteDatabase.clear();
       return model;
     } on DioException catch (_) {
       rethrow;
