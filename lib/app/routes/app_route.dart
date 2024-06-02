@@ -1,6 +1,8 @@
 import 'package:entrance_test/app/routes/route_name.dart';
 import 'package:entrance_test/src/features/dashboard/component/dashboard_binding.dart';
 import 'package:entrance_test/src/features/dashboard/dashboard_page.dart';
+import 'package:entrance_test/src/features/dashboard/products/detail/component/product_detail_binding.dart';
+import 'package:entrance_test/src/features/dashboard/products/detail/product_detail_page.dart';
 import 'package:entrance_test/src/features/dashboard/profile/edit/edit_profile_page.dart';
 import 'package:entrance_test/src/features/splashscreen/component/splashscreen_binding.dart';
 import 'package:entrance_test/src/features/splashscreen/splashscreen_page.dart';
@@ -31,6 +33,11 @@ class AppRoute {
       name: RouteName.editProfile,
       page: () => const EditProfilePage(),
       binding: EditProfileBinding(),
+    ),
+    GetPage(
+      name: RouteName.productDetail,
+      page: () => const ProductDetailPage(),
+      binding: ProductDetailBinding(),
     ),
   ];
 }

@@ -10,42 +10,16 @@ import 'package:entrance_test/src/repositories/user_repository.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-import '../profile/component/profile_controller.dart';
-
-class DashboardBinding extends Bindings {
+class ProductDetailBinding extends Bindings {
   @override
   void dependencies() async {
     Get.put(FavoriteDatabase());
-
-    Get.put(UserRepository(
-      client: Get.find<Dio>(),
-      local: Get.find<GetStorage>(),
-      favoriteDatabase: Get.find<FavoriteDatabase>(),
-    ));
-
     Get.put(ProductRepository(
       client: Get.find<Dio>(),
       local: Get.find<GetStorage>(),
       favoriteDatabase: Get.find<FavoriteDatabase>(),
     ));
-
-    Get.put(FavoriteRepository(
-      favoriteDatabase: Get.find<FavoriteDatabase>(),
-    ));
-
-    Get.put(
-      DashboardController(),
-    );
-
-    Get.put(ProfileController(
-      userRepository: Get.find<UserRepository>(),
-    ));
-
-    Get.put(FavoriteListController(
-      favoriteRepository: Get.find<FavoriteRepository>(),
-    ));
-
-    Get.put(ProductListController(
+    Get.put(ProductDetailController(
       productRepository: Get.find<ProductRepository>(),
     ));
   }

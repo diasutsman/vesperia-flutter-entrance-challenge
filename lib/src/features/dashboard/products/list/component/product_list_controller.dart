@@ -1,3 +1,4 @@
+import 'package:entrance_test/app/routes/route_name.dart';
 import 'package:entrance_test/src/features/dashboard/favorites/component/favorite_list_controller.dart';
 import 'package:get/get.dart';
 import '../../../../../models/product_model.dart';
@@ -79,7 +80,7 @@ class ProductListController extends GetxController {
   }
 
   void toProductDetail(ProductModel product) async {
-    //TODO: finish this implementation by creating product detail page & calling it here
+    Get.toNamed('${RouteName.productList}/${product.id}');
   }
 
   void setFavorite(ProductModel product) async {
