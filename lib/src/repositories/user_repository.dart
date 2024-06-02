@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:entrance_test/src/constants/local_data_key.dart';
 import 'package:entrance_test/src/databases/favorite_database.dart';
@@ -94,12 +96,24 @@ class UserRepository {
   ) async {
     try {
       String endpoint = Endpoint.updateProfile;
+
+      MultipartFile? profilePicture;
+
+      if (request.profilePicture.isNotEmpty) {
+        File file = File(request.profilePicture);
+
+        String fileName = file.path.split('/').last;
+
+        profilePicture =
+            await MultipartFile.fromFile(file.path, filename: fileName);
+      }
+
       final responseJson = await _client.post(
         endpoint,
         data: FormData.fromMap({
           ...request.toJson(),
           '_method': 'PUT',
-          'profile_picture': null,
+          'profile_picture': profilePicture,
         }),
         options: NetworkingUtil.setupNetworkOptions(
             'Bearer ${_local.read(LocalDataKey.token)}'),

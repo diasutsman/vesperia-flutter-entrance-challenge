@@ -124,7 +124,7 @@ class ProfileController extends GetxController {
   }
 
   Future<bool> _requestPermissions() async {
-    final status = await Permission.storage.request();
+    final status = await Permission.manageExternalStorage.request();
     return status.isGranted;
   }
 

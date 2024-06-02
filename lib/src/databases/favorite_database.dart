@@ -38,12 +38,34 @@ class FavoriteDatabase {
       path,
       version: 3,
       onCreate: (Database db, int version) async {
-        await db.execute(
-          '''
+        await db.execute("DROP TABLE IF EXISTS $_tableFavorites");
+        await db.execute('''
 create table $_tableFavorites ( 
-  $_columnId VARCHAR(255) PRIMARY KEY)
-''',
-        );
+  $_columnId VARCHAR(255) PRIMARY KEY,
+  $_columnName VARCHAR(255),
+  $_columnPrice INT,
+  $_columnDiscountPrice INT,
+  $_columnIsPrescriptionDrugs BOOLEAN,
+  $_columnDescription TEXT,
+  $_columnReturnTerms TEXT,
+  $_columnRatingAverage VARCHAR(255),
+  $_columnRatingCount INT,
+  $_columnReviewCount INT)
+''');
+
+        await db.execute("DROP TABLE IF EXISTS $_tableFavoritesImages");
+        await db.execute('''
+create table $_tableFavoritesImages ( 
+  $_columnImageId VARCHAR(255) PRIMARY KEY,
+  $_columnImageProductId VARCHAR(255),
+  $_columnImagePath VARCHAR(255),
+  $_columnImagePathSmall VARCHAR(255),
+  $_columnImageUrl TEXT,
+  $_columnImageUrlSmall TEXT,
+  $_columnImageCreatedAt VARCHAR(255),
+  $_columnImageUpdatedAt VARCHAR(255),
+  FOREIGN KEY ($_columnImageProductId) REFERENCES $_tableFavorites($_columnId) ON DELETE CASCADE)
+''');
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         await db.execute("DROP TABLE IF EXISTS $_tableFavorites");

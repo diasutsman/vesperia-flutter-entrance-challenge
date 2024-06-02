@@ -22,18 +22,18 @@ class EditProfilePage extends GetView<EditProfileController> {
         child: Scaffold(
           backgroundColor: white,
           appBar: AppBar(
-            // leading: IconButton(
-            // onPressed: () {
-            // TODO: fix so that it will refresh profil when updated
-            // Get.back(
-            //   result: controller.isSuccessfullyEdited,
-            //   closeOverlays: false,
-            // );
-            // },
-            //   icon: const Icon(
-            //     Icons.arrow_back,
-            //   ),
-            // ),
+            leading: IconButton(
+              onPressed: () {
+                // TODO: fix so that it will refresh profil when updated
+                Get.back(
+                  result: controller.isSuccessfullyEdited,
+                  closeOverlays: false,
+                );
+              },
+              icon: const Icon(
+                Icons.arrow_back,
+              ),
+            ),
             title: const Text(
               "Edit Profile",
               style: TextStyle(

@@ -5,7 +5,7 @@ class UpdateUserRequestModel {
   final DateTime _dateOfBirth;
   final int? _height;
   final int? _weight;
-  final String _profilePicture;
+  final String profilePicture;
   UpdateUserRequestModel({
     required String name,
     required String email,
@@ -13,14 +13,13 @@ class UpdateUserRequestModel {
     required DateTime dateOfBirth,
     required int? height,
     required int? weight,
-    required String profilePicture,
+    required this.profilePicture,
   })  : _name = name,
         _email = email,
         _gender = gender,
         _dateOfBirth = dateOfBirth,
         _height = height,
-        _weight = weight,
-        _profilePicture = profilePicture;
+        _weight = weight;
 
   Map<String, dynamic> toJson() => {
         'name': _name,
@@ -29,7 +28,7 @@ class UpdateUserRequestModel {
         'date_of_birth': _dateOfBirth,
         'height': _height,
         'weight': _weight,
-        'profile_picture': _profilePicture,
+        'profile_picture': profilePicture,
       };
 
   @override

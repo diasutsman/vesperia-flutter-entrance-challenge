@@ -3,6 +3,7 @@ import 'package:entrance_test/src/repositories/user_repository.dart';
 import 'package:entrance_test/src/utils/string_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../../utils/date_util.dart';
 import '../../../../../utils/networking_util.dart';
@@ -135,7 +136,42 @@ class EditProfileController extends GetxController {
   }
 
   void changeImage() async {
-    //TODO: Implement change profile image
+    final ImagePicker picker = ImagePicker();
+    XFile? image;
+
+    await Get.bottomSheet(
+      Container(
+        color: Colors.white,
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Gallery'),
+              onTap: () async {
+                Navigator.pop(Get.context!);
+                image = await picker.pickImage(source: ImageSource.gallery);
+                if (image != null) {
+                  _profilePictureUrlOrPath.value = image!.path;
+                  _isLoadPictureFromPath.value = true;
+                }
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_camera),
+              title: const Text('Camera'),
+              onTap: () async {
+                Navigator.pop(Get.context!);
+                image = await picker.pickImage(source: ImageSource.camera);
+                if (image != null) {
+                  _profilePictureUrlOrPath.value = image!.path;
+                  _isLoadPictureFromPath.value = true;
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void onChangeGender(bool isFemale) {
@@ -165,7 +201,7 @@ class EditProfileController extends GetxController {
           weight: int.tryParse(etWeight.text),
           dateOfBirth: DateUtil.getDateFromBirthDateFormat(etBirthDate.text),
           gender: _gender.value,
-          profilePicture: profilePictureUrlOrPath,
+          profilePicture: isLoadPictureFromPath ? profilePictureUrlOrPath : "",
         ),
       );
       _isSuccessfullyEdited.value = true;
