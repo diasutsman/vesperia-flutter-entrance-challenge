@@ -331,62 +331,57 @@ class ProductDetailPage extends GetView<ProductDetailController> {
   }
 
   void showMoreRatings(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
+    Get.bottomSheet(
+      Container(
+        color: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 24,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'More Reviews',
+                    textAlign: TextAlign.left,
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 24,
+                      color: const Color(0xFF2E2E2E),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    icon: const Icon(
+                      Icons.close,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: PagedListView<int, ProductRatingModel>(
+                padding: const EdgeInsets.all(24),
+                shrinkWrap: true,
+                pagingController: controller.productRatingsPagingController,
+                builderDelegate: PagedChildBuilderDelegate<ProductRatingModel>(
+                  itemBuilder: (context, item, index) => productRatingItem(
+                    productRating: item,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
-      builder: (context) {
-        final DraggableScrollableController productSheetController =
-            DraggableScrollableController();
-        return DraggableScrollableSheet(
-          expand: false,
-          snap: true,
-          initialChildSize: 0.5,
-          maxChildSize: 0.5,
-          minChildSize: 0.5,
-          // controller: controller.productSheetController,
-          controller: productSheetController,
-          builder: (context, scrollController) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Center(
-                    child: SizedBox(
-                      width: 100,
-                      child: Divider(
-                        thickness: 5,
-                        color: Color(0xFF949494),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: PagedListView<int, ProductRatingModel>(
-                    padding: const EdgeInsets.all(24),
-                    shrinkWrap: true,
-                    pagingController: controller.productRatingsPagingController,
-                    builderDelegate:
-                        PagedChildBuilderDelegate<ProductRatingModel>(
-                      itemBuilder: (context, item, index) => productRatingItem(
-                        productRating: item,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
     );
   }
 
