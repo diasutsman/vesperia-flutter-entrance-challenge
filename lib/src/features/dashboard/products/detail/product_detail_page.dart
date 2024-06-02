@@ -2,12 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:entrance_test/src/constants/color.dart';
 import 'package:entrance_test/src/constants/icon.dart';
 import 'package:entrance_test/src/features/dashboard/products/detail/component/product_detail_controller.dart';
+import 'package:entrance_test/src/models/product_model.dart';
+import 'package:entrance_test/src/models/product_rating_model.dart';
 import 'package:entrance_test/src/utils/date_util.dart';
 import 'package:entrance_test/src/utils/number_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class ProductDetailPage extends GetView<ProductDetailController> {
   const ProductDetailPage({
@@ -222,7 +224,9 @@ class ProductDetailPage extends GetView<ProductDetailController> {
                                         ),
                                       ),
                                       TextButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          showMoreRatings(context);
+                                        },
                                         style: TextButton.styleFrom(
                                           textStyle: GoogleFonts.inter(
                                             fontWeight: FontWeight.w600,
@@ -301,116 +305,19 @@ class ProductDetailPage extends GetView<ProductDetailController> {
                                       ? const Center(
                                           child: CircularProgressIndicator(),
                                         )
-                                      : ListView.separated(
+                                      : ListView.builder(
                                           shrinkWrap: true,
                                           physics:
                                               const NeverScrollableScrollPhysics(),
                                           itemBuilder: (context, index) {
                                             final productRating = controller
                                                 .productRatings[index];
-                                            return Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.stretch,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    CircleAvatar(
-                                                      child: CachedNetworkImage(
-                                                        imageUrl: productRating
-                                                                .user
-                                                                .profilePicture ??
-                                                            '',
-                                                        fit: BoxFit.cover,
-                                                        errorWidget: (context,
-                                                                url, error) =>
-                                                            Image.asset(
-                                                          ic_error_image,
-                                                          fit: BoxFit.contain,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                      width: 12,
-                                                    ),
-                                                    Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          productRating
-                                                              .user.name,
-                                                          textAlign:
-                                                              TextAlign.left,
-                                                          style:
-                                                              GoogleFonts.inter(
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize: 14,
-                                                            color: const Color(
-                                                                0xFF2E2E2E),
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 4,
-                                                        ),
-                                                        Row(
-                                                          children:
-                                                              List.generate(
-                                                            productRating
-                                                                .rating,
-                                                            (_) {
-                                                              return const Icon(
-                                                                Icons
-                                                                    .star_rate_rounded,
-                                                                color: Color(
-                                                                    0xFFFFCC00),
-                                                              );
-                                                            },
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                    const Expanded(
-                                                      child: SizedBox(),
-                                                    ),
-                                                    Text(
-                                                      DateUtil.getTimeAgo(
-                                                        productRating.createdAt,
-                                                      ),
-                                                      textAlign: TextAlign.left,
-                                                      style: GoogleFonts.inter(
-                                                        color: const Color(
-                                                            0xFF949494),
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        fontSize: 12,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(
-                                                  height: 12,
-                                                ),
-                                                Text(
-                                                  productRating.review,
-                                                  textAlign: TextAlign.left,
-                                                  style: GoogleFonts.inter(
-                                                    fontWeight: FontWeight.w400,
-                                                    fontSize: 12,
-                                                    color:
-                                                        const Color(0xFF2E2E2E),
-                                                  ),
-                                                ),
-                                              ],
+                                            return productRatingItem(
+                                              productRating: productRating,
                                             );
                                           },
                                           itemCount:
                                               controller.productRatings.length,
-                                          separatorBuilder: (context, index) =>
-                                              const SizedBox(
-                                            height: 24,
-                                          ),
                                         ),
                                 ],
                               ),
@@ -419,6 +326,148 @@ class ProductDetailPage extends GetView<ProductDetailController> {
                   ),
                 ),
         ),
+      ),
+    );
+  }
+
+  void showMoreRatings(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      builder: (context) {
+        final DraggableScrollableController productSheetController =
+            DraggableScrollableController();
+        return DraggableScrollableSheet(
+          expand: false,
+          snap: true,
+          initialChildSize: 0.5,
+          maxChildSize: 0.5,
+          minChildSize: 0.5,
+          // controller: controller.productSheetController,
+          controller: productSheetController,
+          builder: (context, scrollController) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Center(
+                    child: SizedBox(
+                      width: 100,
+                      child: Divider(
+                        thickness: 5,
+                        color: Color(0xFF949494),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: PagedListView<int, ProductRatingModel>(
+                    padding: const EdgeInsets.all(24),
+                    shrinkWrap: true,
+                    pagingController: controller.productRatingsPagingController,
+                    builderDelegate:
+                        PagedChildBuilderDelegate<ProductRatingModel>(
+                      itemBuilder: (context, item, index) => productRatingItem(
+                        productRating: item,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget productRatingItem({required ProductRatingModel productRating}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                child: CachedNetworkImage(
+                  imageUrl: productRating.user.profilePicture ?? '',
+                  fit: BoxFit.cover,
+                  errorWidget: (context, url, error) => Image.asset(
+                    ic_error_image,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                width: 12,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    productRating.user.name,
+                    textAlign: TextAlign.left,
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: const Color(0xFF2E2E2E),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  Row(
+                    children: List.generate(
+                      productRating.rating,
+                      (_) {
+                        return const Icon(
+                          Icons.star_rate_rounded,
+                          color: Color(0xFFFFCC00),
+                        );
+                      },
+                    ),
+                  )
+                ],
+              ),
+              const Expanded(
+                child: SizedBox(),
+              ),
+              Text(
+                DateUtil.getTimeAgo(
+                  productRating.createdAt,
+                ),
+                textAlign: TextAlign.left,
+                style: GoogleFonts.inter(
+                  color: const Color(0xFF949494),
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          Text(
+            productRating.review,
+            textAlign: TextAlign.left,
+            style: GoogleFonts.inter(
+              fontWeight: FontWeight.w400,
+              fontSize: 12,
+              color: const Color(0xFF2E2E2E),
+            ),
+          ),
+        ],
       ),
     );
   }
