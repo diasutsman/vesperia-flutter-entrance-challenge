@@ -57,10 +57,6 @@ class UserRepository {
   }
 
   Future<LogoutResponseModel> logout() async {
-    //Artificial delay to simulate logging out process
-    // await Future.delayed(const Duration(seconds: 2));
-    // await _local.remove(LocalDataKey.token);
-
     try {
       final responseJson = await _client.post(
         Endpoint.signOut,

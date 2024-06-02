@@ -34,14 +34,14 @@ class SplashscreenController extends GetxController {
       const Duration(seconds: 3),
     );
 
-    if (!_local.hasData(LocalDataKey.token)) {
-      Get.offAllNamed(RouteName.login);
-      return;
-    }
-
     if (!_local.hasData(LocalDataKey.boarded) ||
         _local.read(LocalDataKey.boarded) == false) {
       Get.offAllNamed(RouteName.boarding);
+      return;
+    }
+
+    if (!_local.hasData(LocalDataKey.token)) {
+      Get.offAllNamed(RouteName.login);
       return;
     }
 
