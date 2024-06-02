@@ -7,4 +7,5 @@ abstract class RouteName {
   static const editProfile = '/profile/edit';
   static const productDetail = '/product/:productId';
   static const productList = '/product';
+  static const boarding = '/boarding';
 }

@@ -1,3 +1,4 @@
+import 'package:entrance_test/src/constants/icon.dart';
 import 'package:entrance_test/src/features/login/component/login_controller.dart';
 import 'package:entrance_test/src/features/splashscreen/component/splashscreen_controller.dart';
 import 'package:flutter/foundation.dart';
@@ -23,7 +24,7 @@ class SplashscreenPage extends GetView<SplashscreenController> {
         child: Stack(
           children: [
             Center(
-              child: Image.asset('assets/icons/icon-app.png'),
+              child: Image.asset(ic_app_icon),
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.end,

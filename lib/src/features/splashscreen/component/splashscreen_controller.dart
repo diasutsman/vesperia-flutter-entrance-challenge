@@ -34,13 +34,19 @@ class SplashscreenController extends GetxController {
       const Duration(seconds: 3),
     );
 
-    //* if token exists then go to dashboard
-    if (_local.hasData(LocalDataKey.token)) {
-      Get.offAllNamed(RouteName.dashboard);
-    } else {
-      //* Else, go to login
+    if (!_local.hasData(LocalDataKey.token)) {
       Get.offAllNamed(RouteName.login);
+      return;
     }
+
+    if (!_local.hasData(LocalDataKey.boarded) ||
+        _local.read(LocalDataKey.boarded) == false) {
+      Get.offAllNamed(RouteName.boarding);
+      return;
+    }
+
+    Get.offAllNamed(RouteName.dashboard);
+    return;
   }
 
   Future<String> loadVersion() async {
