@@ -24,7 +24,6 @@ class EditProfilePage extends GetView<EditProfileController> {
           appBar: AppBar(
             leading: IconButton(
               onPressed: () {
-                // TODO: fix so that it will refresh profil when updated
                 Get.back(
                   result: controller.isSuccessfullyEdited,
                   closeOverlays: false,
